@@ -1,3 +1,5 @@
+using System;
+
 namespace PickrTechnicalTest
 {
     using System.IO;
@@ -41,20 +43,27 @@ namespace PickrTechnicalTest
 
         private AnnualSalaryTaxBand[] LoadAnnualSalaryTaxBandsFromS3()
         {
-            var s3GetObjectRequest = new GetObjectRequest()
+            try
             {
-                BucketName = this.annualSalaryTaxBandsS3BucketName,
-                Key = this.annualSalaryTaxBandsS3Key,
-            };
+                var s3GetObjectRequest = new GetObjectRequest()
+                {
+                    BucketName = this.annualSalaryTaxBandsS3BucketName,
+                    Key = this.annualSalaryTaxBandsS3Key,
+                };
 
-            string fileContents;
-            using (var getObjectResponse = this.amazonS3Client.GetObjectAsync(s3GetObjectRequest).Result)
-            {
-                StreamReader reader = new StreamReader(getObjectResponse.ResponseStream, Encoding.UTF8);
-                fileContents = reader.ReadToEnd();
+                string fileContents;
+                using (var getObjectResponse = this.amazonS3Client.GetObjectAsync(s3GetObjectRequest).Result)
+                {
+                    StreamReader reader = new StreamReader(getObjectResponse.ResponseStream, Encoding.UTF8);
+                    fileContents = reader.ReadToEnd();
+                }
+
+                return JsonSerializer.Deserialize<AnnualSalaryTaxBand[]>(fileContents);
             }
-
-            return JsonSerializer.Deserialize<AnnualSalaryTaxBand[]>(fileContents);
+            catch
+            {
+                throw new Exception("Unable to load annual salary tax bands");
+            }
         }
     }
 }
