@@ -1,0 +1,36 @@
+service: pickr-technical-test
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: dotnetcore3.1
+  
+  region: eu-west-1
+  
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:ListBucket"
+        - "s3:GetObject"
+      Resource: "arn:aws:s3:::pickr-technical-test/*"
+  
+  environment:
+    ANNUAL_SALARY_TAX_BANDS_BUCKET_NAME: pickr-technical-test
+    ANNUAL_SALARY_TAX_BANDS_S3_KEY: annual-salary-tax-bands.json
+
+package:
+  individually: true
+
+functions:
+  calculateTaxToPayOnAnnualSalary:
+    handler: CsharpHandlers::PickrTechnicalTest.Handler::CalculateTaxToPayOnAnnualSalary
+    timeout: 30
+    events:
+      - http:
+          path: invoke
+          method: post
+    package:
+      artifact: artifacts/Release/netcoreapp3.1/pickr-technical-test.zip
+      exclude:
+        - .git/**

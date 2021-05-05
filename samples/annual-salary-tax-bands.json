@@ -1,0 +1,22 @@
+[
+  {
+    "StartOfRange": 0,
+    "EndOfRange": 12500,
+    "RateMultiplier": 0
+  },
+  {
+    "StartOfRange": 12500,
+    "EndOfRange": 50000,
+    "RateMultiplier": 0.2
+  },
+  {
+    "StartOfRange": 50000,
+    "EndOfRange": 150000,
+    "RateMultiplier": 0.4
+  },
+  {
+    "StartOfRange": 150000,
+    "EndOfRange": null,
+    "RateMultiplier": 0.45
+  }
+]
